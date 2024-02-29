@@ -3,7 +3,7 @@ name: CI
 on: push
 jobs:
   samples-test-job:
-    name: "Set up ubuntu"
+    name: "Run Actions"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,7 +14,7 @@ jobs:
           distribution: 'zulu'
           java-version: 8
 
-      - name: Run the Maven
+      - name: "Run the Maven"
         run: mvn --batch-mode package
 
       - name: "Upload jmh output result"
@@ -23,7 +23,7 @@ jobs:
           name: samples-jmh-result
           path: /tmp/jmh_result/
 
-      - name: Push results to results repository
+      - name: "Push results to results repository"
         env:
           RESULTS_REPO_OWNER: wxbty
           RESULTS_REPO_NAME: jmh_result
@@ -41,7 +41,7 @@ jobs:
           DIRECTORY_PATH="$WORK_DIR/test-results"
           
           for file in `ls /tmp/jmh_result`; do
-           cp $file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
+           cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
           done
 
           MAX_FILES=5
