@@ -15,22 +15,74 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  samples-test-job:
+    needs: [check-format, build-source, samples-test-prepare]
+    name: "Samples Test on ubuntu-latest"
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: "Set up JDK 8"
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: "Compile (Linux)"
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          cd ${{ github.workspace }}/testa_actions
+          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast -T 2C package exec:java -Dmaven.test.skip=true -Dmaven.test.skip.exec=true
+      - name: "Upload jmh output result"
+        uses: actions/upload-artifact@v3
+        with:
+          name: samples-jmh-result
+          path: /tmp/jmh_result/
+
+      - name: Push results to results repository
+        env:
+          RESULTS_REPO_OWNER: wxbty
+          RESULTS_REPO_NAME: jmh_result
+          RESULTS_REPO_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
+        run: |
+          if [[ ! -f /tmp/jmh_result.json ]]; then
+            echo "/tmp/jmh_result.json does not exist. Exiting..."
+            exit 0
+          fi
+          git clone https://github.com/${RESULTS_REPO_OWNER}/${RESULTS_REPO_NAME}.git jmh_result
+          cd jmh_result
+          git config user.email "wxb_101@163.com"
+          git config user.name "wxbty"
+
+          WORK_DIR="$(pwd)"
+          echo "WorkDir: $WORK_DIR"
+          DIRECTORY_PATH="$WORK_DIR/test-results"
+          cp "/tmp/jmh_result.json" "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
+
+          MAX_FILES=5
+          files=($(ls -t1 "$DIRECTORY_PATH" | tail -n +2))
+          if [[ ${#files[@]} -gt $MAX_FILES ]]; then
+            oldest_file="${files[0]}"
+            echo "删除最旧的文件: $oldest_file"
+            rm "$DIRECTORY_PATH/$oldest_file"
+          fi
+
+          merged_file="merged_results.json"
+          rm -rf "$DIRECTORY_PATH/$merged_file"
+          
+          sudo apt-get update
+          sudo apt-get install -y jq
+          
+          json_array=()
+          for file in $(ls -t1 "$DIRECTORY_PATH"/*.json); do
+           if [ -f "$file" ]; then
+              json_array+=( "$(cat "$file")" )
+           fi
+          done
+          
+          merged_json=$(echo "${json_array[@]}" | jq -s add)
+          echo "$merged_json" > "$DIRECTORY_PATH/$merged_file"
+
+          git add test-results
+          git commit -m "Add test results 1 from $(date +'%Y-%m-%d %H:%M:%S')"
+          git push https://${GITHUB_TOKEN}@github.com/${RESULTS_REPO_OWNER}/${RESULTS_REPO_NAME}.git ${RESULTS_REPO_BRANCH}
