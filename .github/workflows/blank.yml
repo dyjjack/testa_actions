@@ -34,10 +34,7 @@ jobs:
           RESULTS_REPO_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
         run: |
-          if [[ ! -f /tmp/jmh_result.json ]]; then
-            echo "/tmp/jmh_result.json does not exist. Exiting..."
-            exit 0
-          fi
+ 
           git clone https://github.com/${RESULTS_REPO_OWNER}/${RESULTS_REPO_NAME}.git jmh_result
           cd jmh_result
           git config user.email "wxb_101@163.com"
@@ -46,7 +43,9 @@ jobs:
           WORK_DIR="$(pwd)"
           echo "WorkDir: $WORK_DIR"
           DIRECTORY_PATH="$WORK_DIR/test-results"
-          cp "/tmp/jmh_result.json" "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
+          for file in /tmp/jmh_result; do
+           cp file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
+          done
 
           MAX_FILES=5
           files=($(ls -t1 "$DIRECTORY_PATH" | tail -n +2))
