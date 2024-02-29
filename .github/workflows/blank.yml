@@ -22,6 +22,7 @@ jobs:
         with:
           name: samples-jmh-result
           path: /tmp/jmh_result/
+
       - name: "Push results to results repository"
         env:
           RESULTS_REPO_OWNER: dyjjack
@@ -64,8 +65,6 @@ jobs:
           merged_file="merged_results.json"
           rm -rf "$DIRECTORY_PATH/$merged_file"
           
-#          sudo apt-get update
-#          sudo apt-get install -y jq
           
           json_array=()
           for file in $(ls -t1 "$DIRECTORY_PATH"/*.json); do
