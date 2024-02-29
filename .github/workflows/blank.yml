@@ -44,7 +44,26 @@ jobs:
            cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
           done
 
-
+  
+          cd $DIRECTORY_PATH
+          if [ $? -eq 0 ];
+            then
+            echo $DIRECTORY_PATH
+            echo "Contains file:"
+            echo *
+            num=`ls -l | grep '^d' | wc -l`;
+            if [$num -gt 5 ];
+              then
+              num=`expr $num - 5`
+              clean=`ls -tr | head -$num | xargs`
+              echo "will delete file:"
+              echo ${clean}
+              #把文件移动到备份文件夹更安全
+              ls -tr | head -$num | xargs -i -n1 rm -rf {}
+            fi
+          fi
+          
+          
           merged_file="merged_results.json"
           rm -rf "$DIRECTORY_PATH/$merged_file"
           
