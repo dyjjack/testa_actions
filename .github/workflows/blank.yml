@@ -53,7 +53,7 @@ jobs:
               clean=`ls -tr $DIRECTORY_PATH | head -$num | xargs`
               echo "will delete file:"
               echo ${clean}
-              ls -tr $DIRECTORY_PATH | head -$num | xargs -i -n1 rm -rf {}
+              ls -tr $DIRECTORY_PATH | head -$num | xargs -i -n1 git rm -rf {}
             fi
           fi
           
