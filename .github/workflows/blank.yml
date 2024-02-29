@@ -17,13 +17,13 @@ jobs:
       - name: "Run the Maven"
         run: mvn --batch-mode package
 
-      - name: "Upload jmh output result"
+      - name: Upload jmh output result
         uses: actions/upload-artifact@v3
         with:
           name: samples-jmh-result
           path: /tmp/jmh_result/
 
-      - name: "Push results to results repository"
+      - name: Push results to results repository
         env:
           RESULTS_REPO_OWNER: dyjjack
           RESULTS_REPO_NAME: jmh_result
