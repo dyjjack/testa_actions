@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 jobs:
   samples-test-job:
-    name: "Samples Test on ubuntu-latest"
+    name: "Set up ubuntu"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,10 +18,8 @@ jobs:
           distribution: 'zulu'
           java-version: 8
 
-      - name: Run maven test
-        uses: xlui/action-maven-cli@jdk8
-        with:
-          lifecycle: 'clean package test'
+      - name: Run the Maven
+        run: mvn --batch-mode --update-snapshots package
 
       - name: "Upload jmh output result"
         uses: actions/upload-artifact@v3
