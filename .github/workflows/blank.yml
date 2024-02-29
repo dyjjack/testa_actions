@@ -44,13 +44,6 @@ jobs:
            cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
           done
 
-          MAX_FILES=5
-          files=($(ls -t1 "$DIRECTORY_PATH" | tail -n +2))
-          if [[ ${#files[@]} -gt $MAX_FILES ]]; then
-            oldest_file="${files[0]}"
-            echo "删除最旧的文件: $oldest_file"
-            rm "$DIRECTORY_PATH/$oldest_file"
-          fi
 
           merged_file="merged_results.json"
           rm -rf "$DIRECTORY_PATH/$merged_file"
