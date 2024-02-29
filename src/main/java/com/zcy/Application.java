@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 @EnableDubbo
-@EnableScheduling
 public class Application implements WebMvcConfigurer, ApplicationRunner {
 
     public static void main(String[] args) {
