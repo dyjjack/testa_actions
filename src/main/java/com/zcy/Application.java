@@ -27,9 +27,6 @@ public class Application implements WebMvcConfigurer, ApplicationRunner {
 
         ConfigurableApplicationContext run = SpringApplication.run(Application.class, args);
 
-
-
-
         run.close();
     }
 
