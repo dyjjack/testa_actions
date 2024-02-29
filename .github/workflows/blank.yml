@@ -41,7 +41,7 @@ jobs:
           DIRECTORY_PATH="$WORK_DIR/test-results"
           
           for file in `ls /tmp/jmh_result`; do
-           cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y-%m-%d-%H:%M:%S.%N).json"
+           cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y-%m-%d_%H:%M:%S.%N).json"
           done
 
           cd $DIRECTORY_PATH
@@ -54,10 +54,10 @@ jobs:
             if [ $num -gt 5 ];
               then
               num=`expr $num - 5`
-              clean=`ls -tr $DIRECTORY_PATH | head -$num | xargs`
+              clean=`ls -l $DIRECTORY_PATH | awk '{print $9}' | sort | head -$num | xargs`
               echo "will delete file:"
               echo ${clean}
-              ls -tr $DIRECTORY_PATH | head -$num | xargs -i -n1 rm {}
+              ls -l $DIRECTORY_PATH | awk '{print $9}' | sort | head -$num | xargs -i -n1 rm {}
             fi
           fi
           
