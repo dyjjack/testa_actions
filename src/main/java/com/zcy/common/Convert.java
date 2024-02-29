@@ -167,8 +167,8 @@ public class Convert {
 
         Options opt = new OptionsBuilder()
                 .include(Client.class.getSimpleName())
-//                .warmupIterations(3)
-//                .warmupTime(TimeValue.seconds(1))
+                .warmupIterations(1)
+                .warmupTime(TimeValue.seconds(1))
                 .measurementIterations(1)
                 .measurementTime(TimeValue.seconds(1))
                 .param("serialization", serialization)
