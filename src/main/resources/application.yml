@@ -1,0 +1,8 @@
+dubbo:
+  application:
+    name: dubbo-springboot-demo-provider
+  protocol:
+    name: dubbo
+    port: 8081
+  consumer:
+    filter: profilerFilter
