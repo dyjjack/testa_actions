@@ -25,7 +25,7 @@ jobs:
 
       - name: "Push results to results repository"
         env:
-          RESULTS_REPO_OWNER: wxbty
+          RESULTS_REPO_OWNER: dyjjack
           RESULTS_REPO_NAME: jmh_result
           RESULTS_REPO_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
