@@ -41,12 +41,15 @@ jobs:
           DIRECTORY_PATH="$WORK_DIR/test-results"
           
           for file in `ls /tmp/jmh_result`; do
-           cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d%H:%M:%S.%N).json"
+           cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y-%m-%d-%H:%M:%S.%N).json"
           done
 
           cd $DIRECTORY_PATH
           if [ $? -eq 0 ];
             then
+            echo $DIRECTORY_PATH
+            echo "Contains file:"
+            echo `ls $DIRECTORY_PATH -l`
             num=`ls $DIRECTORY_PATH -l | grep '^-' | wc -l`;
             if [ $num -gt 5 ];
               then
