@@ -44,6 +44,7 @@ jobs:
            cp "/tmp/jmh_result/"$file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
           done
 
+          cd $DIRECTORY_PATH
           if [ $? -eq 0 ];
             then
             num=`ls $DIRECTORY_PATH -l | grep '^-' | wc -l`;
@@ -53,7 +54,7 @@ jobs:
               clean=`ls -tr $DIRECTORY_PATH | head -$num | xargs`
               echo "will delete file:"
               echo ${clean}
-              ls -tr $DIRECTORY_PATH | head -$num | xargs -i -n1 git rm -rf {}
+              ls -tr $DIRECTORY_PATH | head -$num | xargs -i -n1 rm {}
             fi
           fi
           
