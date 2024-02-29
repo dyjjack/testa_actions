@@ -51,9 +51,9 @@ jobs:
             echo "Contains file:"
             echo `ls $DIRECTORY_PATH -l`
             num=`ls $DIRECTORY_PATH -l | grep '^-' | wc -l`;
-            if [ $num -gt 5 ];
+            if [ $num -gt 50 ];
               then
-              num=`expr $num - 5`
+              num=`expr $num - 50`
               clean=`ls -l $DIRECTORY_PATH | awk '{print $9}' | sort | head -$num | xargs`
               echo "will delete file:"
               echo ${clean}
