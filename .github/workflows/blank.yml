@@ -19,7 +19,7 @@ jobs:
           java-version: 8
 
       - name: Run the Maven
-        run: mvn --batch-mode --update-snapshots package
+        run: mvn --batch-mode --update-snapshots  -o package
 
       - name: "Upload jmh output result"
         uses: actions/upload-artifact@v3
@@ -43,7 +43,8 @@ jobs:
           WORK_DIR="$(pwd)"
           echo "WorkDir: $WORK_DIR"
           DIRECTORY_PATH="$WORK_DIR/test-results"
-          for file in /tmp/jmh_result; do
+          
+          for file in `ls /tmp/jmh_result`; do
            cp $file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
           done
 
