@@ -44,7 +44,7 @@ jobs:
           echo "WorkDir: $WORK_DIR"
           DIRECTORY_PATH="$WORK_DIR/test-results"
           for file in /tmp/jmh_result; do
-           cp file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
+           cp $file "$DIRECTORY_PATH/jmh_result_$(date +%Y%m%d)_$RANDOM.json"
           done
 
           MAX_FILES=5
