@@ -46,9 +46,6 @@ jobs:
 
           if [ $? -eq 0 ];
             then
-            echo $DIRECTORY_PATH
-            echo "Contains file:"
-            echo *
             num=`ls $DIRECTORY_PATH -l | grep '^-' | wc -l`;
             if [ $num -gt 5 ];
               then
@@ -56,7 +53,6 @@ jobs:
               clean=`ls -tr $DIRECTORY_PATH | head -$num | xargs`
               echo "will delete file:"
               echo ${clean}
-              #把文件移动到备份文件夹更安全
               ls -tr $DIRECTORY_PATH | head -$num | xargs -i -n1 rm -rf {}
             fi
           fi
@@ -76,6 +72,6 @@ jobs:
           merged_json=$(echo "${json_array[@]}" | jq -s add)
           echo "$merged_json" > "$DIRECTORY_PATH/$merged_file"
 
-          git add test-results
+          git add $DIRECTORY_PATH
           git commit -m "Add test results 1 from $(date +'%Y-%m-%d %H:%M:%S')"
           git push https://${GITHUB_TOKEN}@github.com/${RESULTS_REPO_OWNER}/${RESULTS_REPO_NAME}.git ${RESULTS_REPO_BRANCH}
