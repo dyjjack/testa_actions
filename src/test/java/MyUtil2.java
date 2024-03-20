@@ -21,12 +21,16 @@ public class MyUtil2 {
 
     public static void main(String[] args) {
 
+        List<String> filterSerialization = ListUtil.toList(args[0]);
+        List<String> filterProtocol = ListUtil.toList(args[1]);
+
         String jmh = args[0];
         System.out.println(jmh);
 
         List<JMHResult> resultList = JSONUtil.toList(JSONUtil.parseArray(jmh), JMHResult.class);
         Map<String, List<Item>> collect = resultList.stream()
                 .map(a -> Item.builder().time(Long.valueOf(a.getParams().get("time"))).score(a.getPrimaryMetric().getScore()).serialization(a.getParams().get("serialization")).build())
+                .filter(a -> filterSerialization.contains(a.getSerialization()) && filterProtocol.contains(a.getProtocol()))
                 .collect(Collectors.toMap(Item::getSerialization, ListUtil::toList, (oldList, newList) -> {
                     oldList.addAll(newList);
                     return oldList;

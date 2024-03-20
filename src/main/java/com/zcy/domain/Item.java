@@ -16,6 +16,8 @@ public class Item {
 
     private String serialization;
 
+    private String protocol;
+
     private Long time;
 
     private Double score;

@@ -9,6 +9,10 @@ $.ajax({
     }
 });
 
+let filterSerialization = ["hession2"]
+
+let filterProtocol = ["dubbo"]
+
 console.log(jmh);
 // 解析JMH结果字符串为JSON对象
 let resultList;
@@ -20,19 +24,21 @@ try {
 }
 
 // 转换数据结构，按serialization属性分类并收集Item对象
-let collect = resultList.reduce((acc, result) => {
-    let { time, serialization } = result.params;
-    let item = {
-        time: Number(time),
-        score: Math.round(result.primaryMetric.score),
-        serialization: serialization
-    };
-    if (!acc[serialization]) {
-        acc[serialization] = [];
-    }
-    acc[serialization].push(item);
-    return acc;
-}, {});
+let collect = resultList
+    .filter(a => filterSerialization.includes(a.params.serialization) && filterProtocol.includes(a.params.protocol))
+    .reduce((acc, result) => {
+        let { time, serialization } = result.params;
+        let item = {
+            time: Number(time),
+            score: Math.round(result.primaryMetric.score),
+            serialization: serialization
+        };
+        if (!acc[serialization]) {
+            acc[serialization] = [];
+        }
+        acc[serialization].push(item);
+        return acc;
+    }, {});
 
 // 创建一个存储Template对象的数组
 let templateList = {};
