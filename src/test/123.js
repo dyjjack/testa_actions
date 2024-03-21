@@ -3,15 +3,11 @@ let jmh;
 $.ajax({
     type: "GET",
     async: false,
-    url: "https://raw.githubusercontent.com/dyjjack/jmh_result/main/test-results_scheduled/merged_results.json",
+    url: "https://raw.githubusercontent.com/dyjjack/jmh_result/main/test-results/merged_results.json",
     success: function (res) {
         jmh = res
     }
 });
-
-let filterSerialization =  ["hessian2", "fastjson2", "protobuf", "fastjson", "avro", "fst", "gson", "kryo", "msgpack"]
-
-let filterProtocol = ["dubbo", "tri"]
 
 console.log(jmh);
 // 解析JMH结果字符串为JSON对象
@@ -20,27 +16,24 @@ try {
     resultList = JSON.parse(jmh);
 } catch (error) {
     console.error("解析JMH结果字符串出错：", error);
-    return
+    process.exit(1);
 }
 
 // 转换数据结构，按serialization属性分类并收集Item对象
-let collect = resultList
-    .filter(a => filterSerialization.includes(a.params.serialization) && filterProtocol.includes(a.params.protocol))
-    .reduce((acc, result) => {
-        let { time, serialization, protocol} = result.params;
-        let item = {
-            time: Number(time),
-            score: Math.round(result.primaryMetric.score),
-            serialization: serialization,
-            protocol: protocol
-        };
-        let key = serialization + "-" + protocol;
-        if (!acc[key]) {
-            acc[key] = [];
-        }
-        acc[key].push(item);
-        return acc;
-    }, {});
+let collect = resultList.reduce((acc, result) => {
+    let { time, serialization } = result.params;
+    serialization = 'PR'
+    let item = {
+        time: Number(time),
+        score: Math.round(result.primaryMetric.score),
+        serialization: serialization
+    };
+    if (!acc[serialization]) {
+        acc[serialization] = [];
+    }
+    acc[serialization].push(item);
+    return acc;
+}, {});
 
 // 创建一个存储Template对象的数组
 let templateList = {};
@@ -92,9 +85,9 @@ let seriesData = Object.keys(templateList).map((key) => {
 });
 
 // ECharts配置对象
-option = {
+return option = {
     title: {
-        text: 'GitHub PR 性能耗时监控'
+        text: 'PR 性能耗时监控'
     },
     tooltip: {
         trigger: 'axis',
