@@ -98,6 +98,8 @@ option = {
     },
     tooltip: {
         trigger: 'axis',
+        //q: 这个formatter是在做什么
+        //a:
         formatter: function (params) {
             let res = params[0].axisValueLabel + '<br/>';
             params.forEach(item => {
